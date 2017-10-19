@@ -1,0 +1,14 @@
+reprepro deb私有 apt源
+apt-get install reprepro
+mkdir -p /srv/reprepro/ubuntu/{conf,dists,incoming,indices,logs,pool,project,tmp} 
+cd conf 
+touch distributions //版本控制配置文件
+Codename: vphotosadmin
+Architectures: i386 amd64 source
+Components: vphotos
+Description: Ubuntu Main
+
+reprepro includedeb vphotosadmin /home/jeti/ubuntutest_1.0-1_all.deb //在conf 目录上级执行
+
+客户机更新版本，将配置文件放在soure.list.d/目录中
+deb http://mirrors.vphotos.cn/ubuntu/ vphotosadmin（Codename）  vphotos（Components）

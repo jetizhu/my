@@ -1,0 +1,55 @@
+get 
+yum install git-core
+//创建用户 创建完毕后，在用户目录下~/.gitconfig
+git config user.name "zhutianhua"
+git config user.email zhutianhua@126.com
+启动git
+git init
+git 常用命令
+git add file //添加文件跟踪
+git rm file //删除文件跟踪
+git diff file //对比两个文件
+git status // 查看文件情况
+忽略文件配置
+文件：git仓库/.gitignore //添加排除文件类型
+提交更新
+git commmit //确认好get status 然后在git add 再执行git commit
+
+
+git 服务器配置
+apt-get install python-setuptools / yum install python-setuptools
+git clone git://github.com/res0nat0r/gitosis.git
+cd gitosis
+python setup.py install
+
+显示Finished processing dependencies for gitosis==0.2即表示成功
+
+管理gitosis 
+添加管理员
+ssh-keygen -t rsa 
+gitosis-init <id_rsa.pub //添加管理员生成gitosis-admin文件夹，默认为当前用户 如需git 用户 useradd git sudo -H -u git gitosis-init<id_rsa.pub(用户pub密钥)
+gitosis-init <id_rsa.pub
+Initialized empty Git repository in /home/git/repositories/gitosis-admin.git/
+Reinitialized existing Git repository in /home/git/repositories/gitosis-admin.git/
+执行完毕后，到家目录，查看目录结构gitosis  repositories 两个文件夹
+cd repositories/gitosis-admin
+cat gitosis.conf //添加项目 和用户名，格式 username@hostname （在客户机上生成ssh-keygen -t rsa id_rsa.pub）
+cd keydir/ //将客户机的id_rsa.pub  命名为格式为username@hostname
+
+编辑完毕后，记得上传
+git add --all
+git commit -am "test"
+got push origin master
+
+拉取远程仓库
+git clone git@localhost:/路径/gitosis-admin.git 克隆gitosis-admin  内用keydir文件夹
+git remote add origin git@<server>:teamwork.git
+
+代码回滚
+
+git revert HEAD （HEAD 为git log commit id 前8位）
+git push origin master
+
+强制提交不保留历史记录
+git reset --hard HEAD^ （HEAD 为git log commit id 前8位）
+git push origin master -f -f 参数是强制提交

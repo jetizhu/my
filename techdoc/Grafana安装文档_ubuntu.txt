@@ -1,0 +1,36 @@
+influxdb
+wget https://dl.influxdata.com/influxdb/releases/influxdb_0.13.0_amd64.deb
+sudo dpkg -i influxdb_0.13.0_amd64.deb
+sudo apt-get update
+sudo apt-get install influxdb
+curl -G http://192.168.56.11:8086/query?--data-urlencode?"q=CREATE?DATABASE?collectd"
+curl -i -XPOST 'http://localhost:8086/write?db=collectd' --data-binary 'cpu_load_short,host=server01,region=us-west value=0.64 146294754100000000'
+curl -G 'http://localhost:8086/query?pretty=true' --data-urlencode "db=collectd" --data-urlencode "q=SELECT value FROM cpu_load_short WHERE region='us-west'"
+collectd
+sudo apt-get install collectd
+sudo vim /etc/collectd/collectd.conf
+
+
+Grafana
+wget https://grafanarel.s3.amazonaws.com/builds/grafana_3.0.4-1464167696_amd64.deb
+sudo apt-get install -y adduser libfontconfig
+sudo dpkg -i grafana_3.0.4-1464167696_amd64.deb
+
+add /etc/apt/sources.list
+deb https://packagecloud.io/grafana/stable/debian/ wheezy main
+deb https://packagecloud.io/grafana/testing/debian/ wheezy main
+curl https://packagecloud.io/gpg.key | sudo apt-key add -
+
+sudo apt-get update
+sudo apt-get install grafana
+sudo apt-get install -y apt-transport-https
+
+sudo service grafana-server start
+sudo update-rc.d grafana-server defaults 95 10
+
+
+sudo grafana-cli plugins list-remote
+sudo grafana-cli plugins install alexanderzobnin-zabbix-app
+sudo service grafana-server restart
+
+

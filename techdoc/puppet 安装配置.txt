@@ -1,0 +1,10 @@
+puppet、foreman 安装配置
+
+puppet 安装
+ubuntu 安装源（https://docs.puppet.com/puppet/latest/reference/puppet_collections.html）
+apt-get install puppetserver
+CentOS 安装源（https://docs.puppet.com/puppet/latest/reference/puppet_collections.html）
+yum install puppetserver
+
+foreman 安装
+

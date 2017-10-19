@@ -1,0 +1,15 @@
+mysql 主从配置
+1、修改my.cnf（主从服务器）配置文件
+	log——bin 开启
+	server-id 开启
+2、主服务器配置
+	mysql>use mysql;
+	mysql>grant replication slave on *.* to 用户名@'10.%' identified by '密码';创建从服务器用户。
+	mysql>show master status;//查看log名称和POS ID。
+3、从服务器配置
+	mysql>change master to master_host='IP',master_user='用户',master_password='密码',master_log_file='LOG名称',master_log_pos=id;（ID无需加单引号）。
+	mysql>slave start;
+	mysql>show slave status\G;查看从服务器状态。
+
+4、注意
+	原主服务器的数据需要重新备份后导入到从服务器，不然无法旧同步。

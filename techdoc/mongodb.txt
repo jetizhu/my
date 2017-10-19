@@ -1,0 +1,43 @@
+mongo db
+启动mongodb
+/opt/mongodb/bin/mongod -f /etc/mongodb.conf 
+cat /etc/mongodb.conf
+bind_ip=192.168.91.133
+port=27017
+dbpath=/opt/mongodb/data
+logpath=/opt/mongodb/log/mongodb.log
+logappend=true
+#auth=true  //首次启动，关闭认证，创建userAdminAnyDatabase权限用户
+终端登录
+~/bin/mongo  IP:端口 或者指定配置文件
+use 数据库名
+创建userAdminAnyDatabase用户
+db.createUser({ user:"admin", pwd:"admin",roles:[{ role:"userAdminAnyDatabase",db:"admin" }]}) //超级管理员
+db.createUser({ user:"monitor", pwd:"123456",roles:[{ role:"clusterMonitor",db:"admin" }]}) //监控用户
+
+
+    1. 数据库用户角色：read、readWrite;
+    2. 数据库管理角色：dbAdmin、dbOwner、userAdmin；
+    3. 集群管理角色：clusterAdmin、clusterManager、clusterMonitor（Zabbix监控需要的用户权限）、hostManager；
+    4. 备份恢复角色：backup、restore；
+    5. 所有数据库角色：readAnyDatabase、readWriteAnyDatabase、userAdminAnyDatabase、dbAdminAnyDatabase
+    6. 超级用户角色：root   这里还有几个角色间接或直接提供了系统超级用户的访问（dbOwner 、userAdmin、userAdminAnyDatabase）
+    7. 内部角色：__system
+登录用户
+db.auth("用户名","密码")
+返回1 表示认证成功
+
+db.serverStatus()
+
+
+echo "db.serverStatus()" |mongo 192.168.91.133:27017 -utest -p123456 --authenticationDatabase admin  //--authenticationDatabase 指定数据库
+
+
+/opt/mongodb/bin/mongod --dbpath /dv/mongodb/ --auth -f /etc/mongodb.conf --fork --syslog
+
+Mogodb 查询
+use {dbname} //进入库
+db.auth("username","password") //如果开启了验证先验证
+show collections //查询例如mysql表
+db.{collectionsname}.find() //查询所有数据
+db.{statementsname}.remove({}); //删除所有数据

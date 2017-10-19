@@ -1,0 +1,6 @@
+rsync  总结
+
+--delete 删除文件变更
+--progress 显示传输速度
+
+--exclude 排除文件或者目录(要拷贝文件目录的绝对路径，不是Linux下的相对路径,例如 rsync -avr --delete --exclude='/1'(不是/tmp/1/1文件,排除1目录下的1文件) /tmp/1/ /tmp/2/ )

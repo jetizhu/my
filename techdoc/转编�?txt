@@ -1,0 +1,1 @@
+iconv -f GBK -t UTF-8 test.java -o test2.java

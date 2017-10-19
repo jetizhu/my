@@ -1,0 +1,6 @@
+-vmargs -Xms128M -Xmx512M -XX:PermSize=64M -XX:MaxPermSize=128M
+-vmargs 说明后面是VM的参数，所以后面的其实都是JVM的参数了
+-Xms128m JVM初始分配的堆内存
+-Xmx512m JVM最大允许分配的堆内存，按需分配
+-XX:PermSize=64M JVM初始分配的非堆内存
+-XX:MaxPermSize=128M JVM最大允许分配的非堆内存，按需分配

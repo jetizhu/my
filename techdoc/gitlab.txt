@@ -1,0 +1,3 @@
+gitlab CE 版本 安装配置 （Ubuntu14.4）
+参考URL https://about.gitlab.com/downloads/#ubuntu1404
+sudo apt-get install curl openssh-server ca-certificates postfix

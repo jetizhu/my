@@ -1,0 +1,131 @@
+﻿mongodb Replica Set配置
+1、准备三台mongodb 服务（最好三台机器）
+2、配置mongodb.conf 文件（如果没有自行创建和添加,注意mongodb配置文件不能使用tab空格）
+	mongodb.conf
+	dbpath=/dv/mongodb //（存放db路径）
+	bind_ip=192.168.91.133 //（修改成每一台机器的IP）
+	port=27017 //（监听端口）
+	fork=true //（后台运行）
+	replSet=test //（Replica Set名称，注意三台需要统一，后面mongo配置需要引用该名称）
+3、配置Replica Set
+	$mongo-PATH/bin/mongod -f mongodb.conf --syslog //启动mongodb，并且保存日志到syslog中
+	$mongo-PATH/bin/mongo 192.168.91.133//启动mongodb 命令行模式
+	>use admin
+	>cfg={ _id:"test",members:[{_id:0,host:'192.168.91.133:27017',priority:2 },{_id:1,host:'192.168.91.141:27017',priority:1},{_id:2,host:'192.168.91.139:27017',arbiterOnly:true}]}; //test名称注意，priority为优先级
+	>rs.initiate(cfg); //让cfg配置生效
+	{ "ok" : 1 }
+	>rs.status; //查看生效情况
+	test:PRIMARY> rs.status();
+	{
+        "set" : "test",
+        "date" : ISODate("2016-08-25T14:48:57.759Z"),
+        "myState" : 1,
+        "term" : NumberLong(1),
+        "heartbeatIntervalMillis" : NumberLong(2000),
+        "members" : [
+                {
+                        "_id" : 0,
+                        "name" : "192.168.91.133:27017",
+                        "health" : 1,
+                        "state" : 1,
+                        "stateStr" : "PRIMARY",
+                        "uptime" : 208,
+                        "optime" : {
+                                "ts" : Timestamp(1472136410, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2016-08-25T14:46:50Z"),
+                        "electionTime" : Timestamp(1472136409, 1),
+                        "electionDate" : ISODate("2016-08-25T14:46:49Z"),
+                        "configVersion" : 1,
+                        "self" : true
+                },
+                {
+                        "_id" : 1,
+                        "name" : "192.168.91.141:27017",
+                        "health" : 1,
+                        "state" : 2,
+                        "stateStr" : "SECONDARY",
+                        "uptime" : 138,
+                        "optime" : {
+                                "ts" : Timestamp(1472136410, 1),
+                                "t" : NumberLong(1)
+                        },
+                        "optimeDate" : ISODate("2016-08-25T14:46:50Z"),
+                        "lastHeartbeat" : ISODate("2016-08-25T14:48:56.131Z"),
+                        "lastHeartbeatRecv" : ISODate("2016-08-25T14:48:56.873Z"),
+                        "pingMs" : NumberLong(0),
+                        "syncingTo" : "192.168.91.133:27017",
+                        "configVersion" : 1
+                },
+                {
+                        "_id" : 2,
+                        "name" : "192.168.91.139:27017",
+                        "health" : 1,
+                        "state" : 7,
+                        "stateStr" : "ARBITER",
+                        "uptime" : 138,
+                        "lastHeartbeat" : ISODate("2016-08-25T14:48:56.131Z"),
+                        "lastHeartbeatRecv" : ISODate("2016-08-25T14:48:56.785Z"),
+                        "pingMs" : NumberLong(0),
+                        "configVersion" : 1
+                }
+        ],
+        "ok" : 1
+}
+	test:PRIMARY //生效后，名称改变
+	
+
+以上为不加--auth配置的Replice SET
+
+
+增加auth 认证模式
+启动mongodb 不使用auth模
+进入PRIMARY服务器，创建管理员，用于管理认证
+test:PRIMARY>user admin
+test:PRIMARY>admin.createUser(
+  {
+    user: "siteRootAdmin",
+    pwd: "123456",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+关闭Arbiter服务器(需要关闭mongodb.conf中的replication和security选项），添加管理员
+> use admin
+switched to db admin
+> db.createUser({
+... user:"admin",
+... pwd:"123456",
+... roles:[{role:"root",db:"admin"}]
+... });
+
+
+openssl rand -base64 755 > mongodb-keyfile &&chomod 600 mongodb-keyfile  //（创建keyfile文件）,将该文件拷贝到每台Mongodb服务器并修改权限
+
+更改配置文件,注意配置文件中不能含有tab空格符
+/etc/mongodb.conf
+storage:
+  dbPath: /dv/mongodb
+net:
+  bindIp: 192.168.91.133
+  port: 27017
+replication:
+  replSetName: test
+security:
+  keyFile: /usr/local/mongodb/mongodb-keyfile
+processManagement:
+  fork: true
+
+按照以上配置文件，启动所有mongodb服务。
+
+
+
+增加数据/管理节点（需要进PRIMARY服务，进行增加）
+rs.add('192.168.91.150:27017') 
+rs.addArb('192.168.91.150:27017') 
+//重新配置 
+rs.reconfig(rs.conf()) 
+rs.status() //查看状态
+rs.conf() //查看配置
+rs.slaveOk(); //not master and slaveOk=false 错误
+cfg.members[0].priority = 4 // 0代表ID，4为priority权值
