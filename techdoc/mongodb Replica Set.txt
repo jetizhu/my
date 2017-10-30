@@ -130,3 +130,10 @@ rs.conf() //查看配置
 rs.slaveOk(); //not master and slaveOk=false 错误
 cfg.members[0].priority = 4 // 0代表ID，4为priority权值
 rs.reconfig(cfg) //重新读配置文件
+
+setting 配置 检测60秒
+var cfg=rs.config()
+cfg.settings.heartbeatTimeoutSecs=60
+rs.reconfig(cfg)
+rs.conf()
+
