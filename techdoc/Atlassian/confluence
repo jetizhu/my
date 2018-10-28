@@ -1,0 +1,21 @@
+下载bin文件
+chmod +x confluence-**.bin
+./confluence-**.bin
+邮件支持 
+找到server.xml 文件。添加
+<Resource name="mail/SSLSMTPServer"
+    auth="Container"
+    type="javax.mail.Session"
+    mail.smtp.host="smtphm.qiye.163.com"
+    mail.smtp.port="994"
+    mail.smtp.auth="true"
+    mail.smtp.user="service@wanxinai.com"
+    password="wanxinai@1"
+    mail.smtp.starttls.enable="true"
+    mail.transport.protocol="smtps"
+    mail.smtp.socketFactory.class="javax.net.ssl.SSLSocketFactory"
+/>
+将 confluence/WEB-INFO/lib/mail-**.jar  ./lib/文件夹中
+重启后，添加 java:comp/env/mail/SSLSMTPServer
+
+注意！，如有需要添加JIRA互访，需要先安装JIRA，在安装CF步骤过程中就田间JIRA为信任互访。
