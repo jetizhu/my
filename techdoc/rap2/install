@@ -1,0 +1,26 @@
+#服务端安装
+git clone https://github.com/thx/rap2-delos.git
+cd rap2-delos
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - //添加nodejs8 版本源
+apt-get install nodejs -y
+npm install 
+npm install -g pm2
+npm install typescript -g
+vim ./src/config/config.dev.ts //配置Mysql和Redis
+  redis: {
+    host: 'localhost',
+    port: 6379,
+    password: 'wanxin@123_Redis',
+   }
+npm run check
+npm run create-db
+npm run dev
+
+#客户端安装
+git clone https://github.com/thx/rap2-dolores.git
+cd rap2-dolores
+npm install
+vim rap2-dolores/src/config.dev.ts
+#修改serve地址是 服务端 rap2-delos 部署成功后的地址
+npm run dev
+
