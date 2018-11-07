@@ -1,0 +1,15 @@
+#erlang 安装
+wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+sudo dpkg -i erlang-solutions_1.0_all.deb
+apt-get update
+apt-get install erlang erlang-nox
+
+#rabbitmq-server 安装
+apt-key adv --keyserver "hkps.pool.sks-keyservers.net" --recv-keys "0x6B73A36E6026DFCA"
+wget -O - "https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc" | sudo apt-key add -
+
+#on Ubuntu 16.04 it would be
+echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | sudo tee /etc/apt/sources.list.d/bintray.rabbitmq.list
+
+apt-get update
+apt-get install rabbitmq-server

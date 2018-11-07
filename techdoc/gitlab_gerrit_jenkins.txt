@@ -1,0 +1,81 @@
+gitlab 安装
+https://packages.gitlab.com/gitlab/gitlab-ce   //查找对应的版本按照说明文档安装即可
+
+gerrit 安装
+https://www.gerritcodereview.com/  //查看Download，进行下载
+
+#useradd gerrit &&mkdir /home/gerrit &&chown gerrit.gerrit /home/gerrit -R
+#su gerrit
+$cd ~ &&mkaie gerrit //切换到家目录，创建安装目录
+$mysql -uroot -p -e 'create database reviewdb default'
+$java -jar gerrit-2.15.6.war init -d gerrit //启动war包文件，-d 是指定工作目录
+[h2]   mysql     //修改成mysql
+
+[auth]opendi //第一次默认，后续改成http
+
+
+安装所有的插件选项
+配置如下：
+[gerrit]
+	basePath = git
+	serverId = 1d34deab-5e7b-4c78-8d21-3d8390e198e7
+	canonicalWebUrl = http://gerrit.wanxinai.com/
+[database]
+	type = mysql
+	hostname = localhost
+	database = reviewdb
+	username = gerrit
+[noteDb "changes"]
+	disableReviewDb = true
+	primaryStorage = note db
+	read = true
+	sequence = true
+	write = true
+[index]
+	type = LUCENE
+[auth]
+	type = HTTP
+	gitBasicAuthPolicy = HTTP
+[receive]
+	enableSignedPush = false
+[sendemail]
+	smtpServer = smtphm.qiye.163.com
+	smtpServerPort = 994
+	smtpEncryption = ssl
+        sslVerify = true
+	from = service@wanxinai.com
+	smtpUser = service@wanxinai.com
+[container]
+	user = gerrit
+	javaHome = /usr/lib/jvm/java-8-openjdk-amd64/jre
+[sshd]
+	listenAddress = *:29418
+[httpd]
+	listenUrl = http://*:8090/
+[cache]
+	directory = cache
+
+#添加gerrit 反向代理，改为http 认证。在nginx 添加认证
+server {
+     listen 80;
+     server_name gerrit.wanxinai.com;
+     allow   all;
+     deny    all;
+
+     auth_basic "Welcomme to Gerrit Code Review Site!";
+     auth_basic_user_file /etc/nginx/pw/gerrit.password;
+
+     location / {
+        proxy_pass  http://172.26.38.168:8090;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Host $host;
+     }
+   } 
+#echo "admin:$apr1$zhe5BBe2$o6uHpOTPwaTZkBp/SIhhG." >>/etc/nginx/pw/gerrit.password 
+#增加用户后，需要管理手动修改用户账户的邮箱
+#增加sshkey,需要指定邮箱
+ssk-keygen -t rsa -C "zhutianhua@wanxinai.com" //生成公、私钥
+#ssh -p 29418 admin@172.26.38.168 gerrit set-account --add-email zhutianhua@wanxinai.com zhutianhua   //为用户添加账户邮箱
+
+#设置gerrit配置
+
