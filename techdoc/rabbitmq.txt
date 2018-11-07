@@ -13,3 +13,7 @@ echo "deb https://dl.bintray.com/rabbitmq/debian xenial main" | sudo tee /etc/ap
 
 apt-get update
 apt-get install rabbitmq-server
+
+
+#配置文件下载
+https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example
