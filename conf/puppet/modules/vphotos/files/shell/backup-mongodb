@@ -1,0 +1,12 @@
+#!/bin/bash
+# backup daily
+#
+
+
+[ -d /dv/mongodb ]||exit 0
+[ -d /dv/backup ]||exit 0
+yd=$(date +%w -d "yesterday")
+td=$(date +%w)
+cp -al /dv/backup/mongodb.$yd /dv/backup/mongodb.$td 
+rsync -avz --delete /dv/mongodb /dv/backup/mongodb.$td
+logger -t 'backup-mongodb' "rsync exit code is $?"

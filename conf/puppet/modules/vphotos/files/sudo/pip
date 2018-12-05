@@ -1,0 +1,4 @@
+Cmnd_Alias PIPCMD=/bin/rm,/usr/bin/rsync,/usr/bin/ionice
+User_Alias PIPADMIN=pip10
+PIPADMIN ALL = (ALL) NOPASSWD: PIPCMD
+

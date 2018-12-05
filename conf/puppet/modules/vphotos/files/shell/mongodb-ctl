@@ -1,0 +1,57 @@
+#!/bin/bash
+# huangmingyou@gmail.com
+# 2015.11.25
+
+
+CFG="/etc/mongodb.conf"
+
+function checkenv() {
+	if [ ! -f $CFG ];then
+		echo "need a config file $CFG !"
+		exit 1
+	fi
+	pgrep mongod
+	if [ $? -eq 0 ];then
+		echo "mongod is running,quit!"
+		exit 2
+	fi
+}
+
+function start() {
+	echo never > /sys/kernel/mm/transparent_hugepage/defrag
+	echo never > /sys/kernel/mm/transparent_hugepage/enabled
+	ulimit -SHn 131072
+	ulimit -SHu 65536
+	/opt/mongodb/bin/mongod --syslog --fork --dbpath=/dv/mongodb --auth -f $CFG
+}
+
+function stop() {
+	pkill mongod
+	if [ $? -eq 0 ];then
+		echo "successful exit!"
+	else
+		echo "get a error code: $? , please check https://docs.mongodb.org/manual/reference/exit-codes/"
+	fi
+}
+
+function status() {
+	pgrep  -l -f "mongod.*syslog"
+}
+
+
+
+case $1 in 
+	start)
+	checkenv
+	start
+	;;
+	stop)
+	stop
+	;;
+	status)
+	status
+	;;
+	*)
+	echo "./$0 [start|stop|status]"
+	;;
+esac

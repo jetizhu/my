@@ -1,0 +1,14 @@
+#!/bin/bash
+dpkg -l|grep vpuppet
+[ $? -ne 0 ]&&exit 0
+
+#sleep ${1:-$(($RANDOM%60))}
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/bin/X11
+slist="/etc/apt/sources.list.d/vphotos.list"
+
+#apt-get update
+apt-get update -o Dir::Etc::sourcelist=$slist   -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+apt-get install --assume-no -o Dir::Etc::sourcelist=$slist   -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"  -o Dpkg::Options::="--force-confnew"  --only-upgrade vpuppet
+
+
+puppet apply --config /opt/puppet/etc/puppet.conf --modulepath=/opt/puppet/modules  /opt/puppet/manifests/site.pp

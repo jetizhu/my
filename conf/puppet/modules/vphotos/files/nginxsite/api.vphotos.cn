@@ -1,0 +1,153 @@
+server {
+        listen 80;
+	listen 443;
+	ssl on;
+        server_name api.vphotos.cn;
+        root /dev/null;
+
+
+
+	ssl_certificate   /etc/nginx/conf.d/api.vphotos.cn.pem;
+        ssl_certificate_key  /etc/nginx/conf.d/api.vphotos.cn.key;
+        ssl_session_timeout 5m;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_prefer_server_ciphers on;
+
+
+	#上海车展临时
+	#http://api.vphotos.cn/vphotosCgi/cgi/album/getPhotoListByWeChatId
+
+	location /vphotosCgi {
+		proxy_pass http://10.3.16.74:8080/vphotoSaaS;
+	}
+	
+	#SaaS
+        location /vphotoSaaS {
+		proxy_pass http://vphotosaas/vphotoSaaS/;
+		#proxy_pass http://10.3.20.145:8080/vphotoSaaS/;
+                proxy_set_header Host $http_host;
+                proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+
+                access_log /var/log/nginx/access-SaaS.log vphoto-main;
+                access_log /var/log/nginx/access-json-SaaS.log vphotoSaaS-json;
+                error_log /var/log/nginx/error.log notice;
+	}
+	#mp-wechat.vphotos.cn (JAVA)
+	location /mp-wechat {
+		proxy_pass http://10.3.16.59:8080/vphotoSaaS/;
+	}
+	#Wechat
+	location /vphotosClient {
+		#proxy_pass http://vphotosclient/vphotosClient/;
+		proxy_pass http://10.3.16.23:8080/vphotosClient/;
+		#proxy_pass http://10.3.16.54/vphotosClient/;
+                proxy_set_header Host $http_host;
+                proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+
+		access_log /var/log/nginx/access-Client.log vphoto-main;
+		access_log /var/log/nginx/access-json-Client.log vphotosClient-json;
+		error_log /var/log/nginx/error.log notice;
+	}
+	location /vphotosClient-beta/wechat {
+		proxy_pass http://10.3.16.56:8080/vphotoSaaS/wechat;
+	}
+	location /vphotosClient/weChatListener {
+		proxy_pass http://10.3.16.58:8080/vphotosClient/weChatListener;
+	}
+	#foract SaaS
+	location /vphotoSaaS-foract {
+		proxy_set_header Host $http_host;
+                proxy_set_header X-Forwarded-For $http_x_forwarded_for;
+		proxy_pass http://10.3.20.145:8080/vphotoSaaS/;
+		#proxy_pass http://10.3.16.50:8080/vphotoSaaS/;
+	}
+
+	#mp-wechat userregister
+	location /vphotosClient-beta2 {
+                proxy_pass http://10.3.16.58:8080/vphotosClient/;
+        }
+	#mp-wechat userregister website
+	location /vphotosClient-beta2/vphotos/website/ {
+		proxy_pass http://10.3.16.59:8080/vphotoSaaS/vphotos/website/;
+	}
+
+	location /vphotosClient-beta {
+                proxy_pass http://10.3.16.54:8080/vphotosClient;
+                proxy_set_header Host $http_host;
+                proxy_set_header X-Forwarded-For  $http_x_forwarded_for;
+
+                access_log /var/log/nginx/access-Client.log vphoto-main;
+                access_log /var/log/nginx/access-json-Client.log vphotosClient-json;
+                error_log /var/log/nginx/error.log notice;
+        }
+	location /vphotosClient-cdn {
+                proxy_pass http://10.3.16.65:8080/vphotosClient;
+                proxy_set_header Host $http_host;
+                proxy_set_header X-Forwarded-For  $http_x_forwarded_for;
+
+                access_log /var/log/nginx/access-Client.log vphoto-main;
+                access_log /var/log/nginx/access-json-Client.log vphotosClient-json;
+                error_log /var/log/nginx/error.log notice;
+        }
+	#Download
+
+	location ~ /vphotoSaaS/download/keyDownloadPhoto.* {
+		rewrite /vphotoSaaS/download/keyDownloadPhoto(.*)$ http://apidown.vphotos.cn/vphotoSaaS/download/keyDownloadPhoto$1 permanent;
+	}
+	location ~ /vphotoSaaS/admin/download/keyDownloadPhoto.* {
+		rewrite /vphotoSaaS/admin/download/keyDownloadPhoto(.*)$ http://apidown.vphotos.cn/vphotoSaaS/admin/download/keyDownloadPhoto$1 permanent;
+	}
+
+
+
+	location /vphotoSaaS/download {
+		proxy_pass http://10.3.20.143:8080/vphotoSaaS/download;
+		#rewrite /vphotosSaaS/(.*)$ http://apidown.vphotos.cn/vphotosSaaS/$1 permanent;
+		access_log /var/log/nginx/access-Client.log vphoto-main;
+	}
+	location /vphotoSaaS/admin/download/ {
+		proxy_pass http://10.3.20.143:8080/vphotoSaaS/admin/download/;
+		access_log /var/log/nginx/access-Client.log vphoto-main;
+	}
+	#APP
+	location /vphotoApp {
+		proxy_pass http://10.3.16.39/vphotoApp/;
+		access_log /var/log/nginx/access-App.log vphoto-main;
+		access_log /var/log/nginx/access-json-App.log vphotoApp-json;
+		error_log /var/log/nginx/error.log notice;
+	}
+	#Weixin/Ali Pay 
+	location /vphoto {
+		proxy_pass http://10.3.16.50:8080/vphotoSaaS/onlinepay;
+		#proxy_pass http://10.3.20.145:8080/vphotoSaaS/onlinepay;
+	}
+	#Hacheck
+	location /hacheck {
+		echo "ok";
+		access_log off;
+	}
+	#vphoto old
+	location /vphotoold {
+		proxy_pass http://10.3.16.35:8080/vphoto/;
+	}
+	#vphotoold to vphotosaas
+	location /vphotoold/updatePhotographer {
+		proxy_pass http://10.3.16.50:8080/vphotoSaaS/pgapp/photographer/updatePhotographer;
+	}
+	#new gallery api
+	location /vphotoSaaS/wechat/album {
+	    proxy_pass http://vphotosaas-gallery/vphotoSaaS/wechat/album;
+	    proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For  $http_x_forwarded_for;
+	    access_log /var/log/nginx/access-saas-new.log;
+	}
+	#gray gallery api
+	location /vphotoSaaS/wechat/gray {
+	    proxy_pass http://10.3.16.54:8080/vphotoSaaS/wechat/album;
+	    proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For  $http_x_forwarded_for;
+	    access_log /var/log/nginx/access-saas-gallery-gray.log;
+	}
+	
+}

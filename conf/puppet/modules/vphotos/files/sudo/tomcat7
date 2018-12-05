@@ -1,0 +1,4 @@
+Cmnd_Alias TOMCMD=/bin/,/usr/bin/,/usr/local/bin,/usr/sbin/,/bin/cat,/bin/rm,/bin/cp,/etc/init.d/tomcat7,/bin/tar,/bin/gzip,/bin/grep,/bin/ls,/bin/sed,/bin/zcat
+User_Alias TOMADMIN=xuanyou,andyge,carter,zxj,ld
+TOMADMIN ALL = (ALL) NOPASSWD: TOMCMD
+

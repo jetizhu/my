@@ -1,0 +1,24 @@
+---
+# V.Photos 服务器配置， 阿里云华东一节点
+# 按层次配置
+# ip,dns,app,service
+
+region: hd1
+fs:
+ - 10.3.16.57
+ - 10.3.16.24
+exceptionfs:
+ - 10.3.16.43
+mysql: 10.3.16.7
+mongodb: 10.3.16.6
+logstash: 10.3.16.47
+sshfs: rssh.vphotos.cn
+ons_topic: vpmq-hd1
+ons_tag: fsCore
+ons_cid: CID-fs_core-hd1
+ons_url: http://onsaddr-internal.aliyun.com:8080/rocketmq/nsaddr4client-internal
+pip:
+ - pip4
+ - pip10
+ons_photo_tag: fsPhoto
+mq_pid: PID-hd1

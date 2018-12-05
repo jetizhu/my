@@ -1,0 +1,2 @@
+PATH=/usr/lib/sysstat:/usr/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+0 1 * * * root run-parts /root/backup-script.d/

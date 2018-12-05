@@ -1,0 +1,6 @@
+#!/bin/bash
+# backup daily
+st=${1:-$(($RANDOM%21600))}
+echo "sleep $st secends from $(date)"
+sleep $st
+RSYNC_PASSWORD='backupATvph0t0s' rsync   -zr   -H  /dv/backup piprsync@10.3.16.18::backup/$(hostname -I|head -n 1)

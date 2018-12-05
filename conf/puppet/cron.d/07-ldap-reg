@@ -1,0 +1,43 @@
+#!/bin/bash
+#set -x
+# 把机器加入 对应机房，默认角色base
+
+SRV=10.3.16.32
+FLAG=/root/ldapreg.flag
+
+# 检查是否已经存在该服务器
+
+[ -f /noldap.flag ]&&exit 0
+
+
+GIP=$1
+LIP=$(hostname -I|tr ' ' '\n' |grep -v -e '127.0.0'|head -n 1)
+
+if [ -z $GIP ];then
+  IP=$LIP
+else
+  IP=$GIP
+fi
+
+ldapsearch  -H ldap://$SRV/ -LLL -D "cn=hmy,dc=vphotos,dc=cn" -w VPhot0s -b 'dc=vphotos,dc=cn'  "cn=${IP}" VPhotosrolelist |perl -p0e 's/\n //g'|grep  $IP > ${FLAG}.tpf
+
+if [ $? -eq  0 ];then
+  echo "已经有 $IP 定义"
+  cat ${FLAG}.tpf 
+  cp ${FLAG}.tpf $FLAG
+  exit 1
+fi
+# 添加机器
+
+
+TF="/tmp/ldapaddhost.ldif"
+
+cat <<EOF > $TF
+dn: cn=$IP,ou=inithost,dc=vphotos,dc=cn
+objectClass: top
+objectClass: VPhotosHost
+cn: $IP
+
+EOF
+
+ldapadd -D 'cn=hmy,dc=vphotos,dc=cn' -w VPhot0s  -H ldap://10.3.16.32/  -f /tmp/ldapaddhost.ldif

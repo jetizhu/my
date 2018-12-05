@@ -1,0 +1,28 @@
+server {
+        listen 80 ;
+
+        root /usr/share/nginx/html/vphotos/;
+        index index.html index.htm;
+        server_name www.vphotos.cn;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+	# 兼容老的相册链接
+	location /gallery {
+		rewrite /gallery/(.*)$ http://gallery.vphotos.cn/vphotosgallery/$1 permanent;
+	}
+
+	location /vphotosgallery {
+		rewrite /vphotosgallery/(.*)$ http://gallery.vphotos.cn/vphotosgallery/$1 permanent;
+	}
+
+	location /foract {
+		rewrite /foract/(.*)$ http://gallery.vphotos.cn/foract/$1 permanent;
+	}
+	location /forwed {
+                rewrite /forwed/(.*)$ http://gallery.vphotos.cn/forwed/$1 permanent;
+        }
+}
+

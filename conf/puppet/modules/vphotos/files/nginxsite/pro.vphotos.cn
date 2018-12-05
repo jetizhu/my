@@ -1,0 +1,9 @@
+server {
+	listen 80;
+	server_name pro.vphotos.cn;
+	root /usr/share/nginx/html/photographer;
+	index index.html index.htm;
+
+	access_log /var/log/nginx/access-pro.log;
+
+}

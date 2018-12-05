@@ -1,0 +1,4 @@
+Cmnd_Alias YWCMD=/usr/bin/,/usr/local/bin/,/usr/sbin/,/bin/
+User_Alias YWADMIN=jeti
+YWADMIN ALL = (ALL) NOPASSWD: YWCMD
+

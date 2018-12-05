@@ -1,0 +1,9 @@
+server {
+        listen 8080;
+        server_name app01.vphotos.cn;
+        root /dev/null;
+
+	location / {
+		proxy_pass http://10.3.16.42:8080;
+	}
+}

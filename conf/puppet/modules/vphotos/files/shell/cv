@@ -1,0 +1,3 @@
+#!/bin/bash
+export MAGICK_TMPDIR="/dev/shm"
+echo $@  |MAGICK_TMPDIR="/dev/shm" bash

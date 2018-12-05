@@ -1,0 +1,14 @@
+server {
+	listen 80;
+	server_name s.vphotos.cn;
+	
+	location / {
+	rewrite ^/([A-Za-z0-9]+$) http://$host/#!login/$1 last;
+	root  /usr/share/nginx/html/vphotos-saas;
+	index index.html index.htm;
+	}
+	
+	access_log /var/log/nginx/access-saas.log saas-main;
+	access_log /var/log/nginx/access-json-saas.log saas-json;
+	error_log  /var/log/nginx/error-saas.log notice;
+}

@@ -1,0 +1,57 @@
+server {
+        listen 80 ;
+
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+
+        server_name cache1.vphotos.cn;
+	#add_header Cache-Control max-age=300;
+	
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        location ~ /.*response-content-type {
+                rewrite ^/(.*)/(.*)/(.*)/Expires/(.*)/OSSAccessKeyId/(.*)/Signature/(.*)/response-content-type/(.*)/bucket/.*/hostname/(.*)/(.*)$ /$1/$2/$3/$9?Expires=$4&OSSAccessKeyId=$5&Signature=$6&response-content-type=$7;
+                proxy_pass http://hangzhou01.ob.vphotos.cn;
+		proxy_redirect	default;
+		proxy_cache cache_oss;
+		proxy_set_header Host $proxy_host;
+		proxy_cache_key  $host$uri;	
+		expires 30m;
+		proxy_cache_valid 200 304  5m;
+		proxy_cache_valid any 1h; 
+                proxy_ignore_headers Cache-Control;
+                proxy_ignore_headers Expires;
+		proxy_hide_header Cache-Control;
+                proxy_hide_header Expires;
+                proxy_hide_header Set-Cookie;
+		proxy_ignore_headers Set-Cookie;
+        }
+        location ~ /.*(JPG|jpg)$ {
+                rewrite ^/(.*)/(.*)/(.*)/Expires/(.*)/OSSAccessKeyId/(.*)/Signature/(.*)/bucket/.*/hostname/(.*)/(.*)$ /$1/$2/$3/$8?Expires=$4&OSSAccessKeyId=$5&Signature=$6;
+                proxy_pass http://hangzhou01.ob.vphotos.cn;
+		proxy_redirect	default;
+		proxy_cache cache_oss;
+		proxy_set_header Host $proxy_host;
+		proxy_cache_key  $host$uri;	
+		expires 30m;
+		proxy_cache_valid 200 304  5m;
+		proxy_cache_valid any 1h; 
+                proxy_ignore_headers Cache-Control;
+                proxy_ignore_headers Expires;
+		proxy_hide_header Cache-Control;
+                proxy_hide_header Expires;
+                proxy_hide_header Set-Cookie;
+		proxy_ignore_headers Set-Cookie;
+        }
+	access_log /var/log/nginx/access-cache1.log;
+	access_log /var/log/nginx/access-cache1-1.log cache-main;
+
+	location /hacheck {
+                echo "ok";
+                access_log off;
+        }
+
+}
+

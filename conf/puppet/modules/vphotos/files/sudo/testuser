@@ -1,0 +1,4 @@
+Cmnd_Alias TESTCMD=/usr/bin/,/usr/local/bin
+User_Alias TESTADMIN=suym,tangzhc
+TESTADMIN ALL = (ALL) NOPASSWD: TESTCMD
+

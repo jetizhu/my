@@ -1,0 +1,5 @@
+#!/bin/bash
+set -x
+slist="/etc/apt/sources.list.d/v.list"
+apt-get update -o Dir::Etc::sourcelist=$slist   -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+apt-get install --assume-no -o Dir::Etc::sourcelist=$slist   -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"  -o Dpkg::Options::="--force-confnew" $@

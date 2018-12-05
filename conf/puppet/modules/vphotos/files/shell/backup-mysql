@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+#
+
+[ -d /dv/mysql ]||exit 1
+[ -d /dv/backup ]||exit 1
+
+mysql -e 'flush tables with read lock'
+if [ $? -ne 0 ];then
+        logger -t "backup-mysql" "can't flush table!"
+else
+        yd=$(date +%w -d "yesterday")
+        td=$(date +%w)
+        cp -al /dv/backup/mysql.$yd /dv/backup/mysql.$td
+        rsync -avz --delete /dv/mysql/ /dv/backup/mysql.$td
+        logger -t "backup-mysql" "rsync exit code is $?"
+fi
+mysql -e 'unlock tables'
+if [ $? -ne 0 ];then
+        logger -t "backup-mysql" "can't unlock tables"
+fi
+

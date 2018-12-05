@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export PATH="/usr/bin:/usr/sbin:/bin:/sbin"
+
+
+load1=$(w |grep -o "load.*"|awk '{print $3}'|sed 's/,//')
+rootfree=$(df /|awk '$1 ~/dev/ {print $4}')
+vmst=$(vmstat |tail -n 2|tr '\n' ' '|awk '{for(i=1;i<=17;i++){j=i+17;print "\""$i"\":"$j}}'|tr '\n' ','|sed 's/,$//')
+
+echo "{\"index\":\"puppetmonitor2\",\"load1\":$load1,\"rootfree\":$rootfree,$vmst}" >/dev/udp/10.3.16.47/5432
+

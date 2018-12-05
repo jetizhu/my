@@ -1,0 +1,26 @@
+server {
+	listen 80 ;
+	server_name  v.photos;
+	return 301 $scheme://vphotos.cn$request_uri;
+}
+
+server {
+	listen 80 ;
+	server_name  www.v.photos;
+	return 301 $scheme://www.vphotos.cn$request_uri;
+}
+server {
+	listen 80 ;
+	server_name  db1.v.photos;
+	return 301 $scheme://db1.vphotos.cn$request_uri;
+}
+server {
+	listen 80 ;
+	server_name  tomcat1.v.photos;
+	return 301 $scheme://tomcat1.vphotos.cn$request_uri;
+}
+server {
+	listen 80 ;
+	server_name  tomcat2.v.photos;
+	return 301 $scheme://tomcat2.vphotos.cn$request_uri;
+}

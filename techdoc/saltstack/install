@@ -1,0 +1,3 @@
+apt-get  install salt-ssh salt-minion salt-common -y
+mkdir /srv/salt
+cp conf/top.sls /srv/salt/

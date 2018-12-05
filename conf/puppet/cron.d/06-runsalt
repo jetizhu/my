@@ -1,0 +1,13 @@
+#!/bin/bash
+[  -f /opt/salt/top.sls ]||exit 0
+salt-call --no-color  -l quiet  --local state.highstate | sed -n '/Summary/,+20p'  > /tmp/salt.log
+
+NOK=$(cat /tmp/salt.log|awk '/Succe/ {print $2}')
+NERR=$(cat /tmp/salt.log|awk '/Fail/ {print $2}')
+HN=$(cat /etc/hostname)
+TS=$(date +%s)
+
+
+cat <<EOF >/dev/udp/10.3.16.47/5432
+{"hostname":"${HN}","time":${TS},"index":"salt","Succeeded":$NOK,"Failed":$NERR}
+EOF

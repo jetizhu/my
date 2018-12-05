@@ -1,0 +1,16 @@
+#!/bin/bash
+# 转换 /etc/vphotos.roles 到 /etc/vphotos.conf
+#
+
+
+
+CF="/etc/vphotos.roles"
+
+[ -f $CF ]||exit 1
+
+RLIST=$(cat $CF|sed -e 's/\[//' -e 's/\]//')
+
+/usr/local/bin/ldap2grains.sh -f -r $RLIST
+
+
+

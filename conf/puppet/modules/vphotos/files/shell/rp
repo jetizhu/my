@@ -1,0 +1,2 @@
+#!/bin/bash
+puppet apply --config /opt/puppet/etc/puppet.conf --modulepath=/opt/puppet/modules  /opt/puppet/manifests/site.pp

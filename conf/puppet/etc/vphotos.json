@@ -1,0 +1,23 @@
+{
+"author":"hmy@vphotos.cn",
+"_comment":"V.Photos 服务器配置",
+"region":[
+{
+"_comment":"阿里云华东1",
+"sshfs":"rssh.vphotos.cn",
+"env":"hd1",
+"mysql":"10.3.16.7",
+"mongodb":"10.3.16.6",
+"fs":["10.3.16.24","10.3.16.57"],
+"exceptionfs":["10.3.16.43"],
+"pip":["pip4","pip10"]
+},
+
+{
+"_comment":"预发布环境",
+"env":"prepub",
+"mysql":"10.3.16.7",
+"mongodb":"10.3.16.6"
+}
+]
+}

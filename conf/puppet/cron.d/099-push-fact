@@ -1,0 +1,17 @@
+#!/bin/bash
+#sleep ${1:-$(($RANDOM%60))}
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
+
+HN=$(cat /etc/hostname)
+eth0ip=$(ip -4 a show dev eth0|awk '$0 ~/inet/ {print $2}'|sed 's:/.*::'|head -n 1)
+st=$(uname -r)
+st2=$(cat /etc/issue.net)
+hn=$(cat /etc/hostname)
+
+tcp_listen=$(netstat -nat|grep -v tcp6|grep -i listen|awk '{print $4}'|sed 's/.*://'|sort|uniq|tr '\n' ','|sed -e 's/,$/\n/')
+udp_listen=$(netstat -nau|grep -v udp6|grep udp|awk '{print $4}'|sed 's/.*://'|sort|uniq|tr '\n' ','|sed -e 's/,$/\n/')
+
+packinfo=$(dpkg -l|grep vphoto|awk '{print "\""$2"\""":""\""$3"\""}'|tr '\n' ',')
+
+
+echo "{${packinfo}\"index\":\"puppet\",\"hostname\":\"${hn}\",\"kernel\":\"${st}\",\"issue\":\"${st2}\",\"fromhost-ip\":\"${eth0ip}\",\"tcp_listen\":\"$tcp_listen\",\"udp_listen\":\"$udp_listen\"}" >/dev/udp/10.3.16.47/5432

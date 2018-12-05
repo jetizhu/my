@@ -1,0 +1,25 @@
+
+### url rewrite ,获取阿里云照片
+##
+#
+
+server {
+        listen 80 ;
+
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+	merge_slashes off;
+
+        server_name cache1.vphotos.cn;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+        location ~ /.*(JPG|jpg)$ {
+                rewrite ^/(.*)/(.*)/(.*)/Expires/(.*)/OSSAccessKeyId/(.*)/Signature/(.*)/bucket/.*/hostname/(.*)/(.*)$ http://$7/$1/$2/$3/$8?Expires=$4&OSSAccessKeyId=$5&Signature=$6;
+                proxy_pass $host;
+                #proxy_pass http://bkwft01.oss-cn-hangzhou.aliyuncs.com;
+        }
+
+}
+

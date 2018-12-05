@@ -1,0 +1,12 @@
+#!/bin/bash
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
+
+facts=$(facter architecture augeasversion domain facterversion hardwareisa hostname id interfaces ipaddress ipaddress_eth0 is_virtual kernel kernelmajversion kernelrelease lsbdistcodename lsbdistdescription lsbdistrelease memoryfree memoryfree_mb osfamily processorcount puppetversion virtual operatingsystem -j)
+HN=$(cat /etc/hostname)
+curl -H 'Content-Type: application/json'  -X POST -d "{\"name\":\"$HN\",\"facts\":$facts , \"host\": { \"name\":\"$HN\" } }"   http://puppetclient:vphotos@10.3.16.16/api/hosts/facts |grep error
+
+if [ $? -eq 0 ];then
+	HN=$(hostname -s)
+	curl -H 'Content-Type: application/json'  -X POST -d "{\"name\":\"$HN\",\"facts\":$facts , \"host\": { \"name\":\"$HN\" } }"   http://puppetclient:vphotos@10.3.16.16/api/hosts/facts 
+fi
+

@@ -1,0 +1,16 @@
+server {
+        listen 80 ;
+        server_name cache2.vphotos.cn;
+        
+location / {
+rewrite ^/bkwft01/(.*) /$1  ;
+proxy_pass http://hangzhou01.ob.vphotos.cn;
+proxy_cache cache_cache2;
+proxy_cache_valid 200 304  5m;
+        }
+
+access_log /var/log/nginx/access-cache2.log main-cache;
+}
+
+
+
