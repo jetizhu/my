@@ -1,0 +1,60 @@
+Centos 版本
+准备三台机器做NTP时间同步
+Master 配置如下:
+systemctl disable firewalld
+systemctl stop firewalld     //关闭防火墙
+setenforce 0
+sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux //关闭selinux
+modprobe br_netfilter
+echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables //
+swapoff -a
+vim /etc/fstab  //disable swap //关闭swap
+cd /etc/yum.repo.d/
+wget -O /etc/yum.repos.d/docker-ce.repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo //docker-ce 镜像repo
+[kubernetes]	//k8s 阿里云镜像
+name=kubernetes Repo
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
+enabled=1
+yum -y install docker-ce kubelet kubeadm kubectl //安装docker-ce 和k8s
+
+由于k8s.gcr.io 无法下载，从docker.io 下载镜像
+docker pull mirrorgooglecontainers/kube-apiserver-amd64:v1.13.4
+docker pull mirrorgooglecontainers/kube-controller-manager-amd64:v1.13.4
+docker pull mirrorgooglecontainers/kube-scheduler-amd64:v1.13.4
+docker pull mirrorgooglecontainers/kube-proxy-amd64:v1.13.4
+docker pull mirrorgooglecontainers/pause:3.1
+docker pull mirrorgooglecontainers/etcd-amd64:3.2.24
+docker pull coredns/coredns:1.2.6
+
+改tag标签
+docker tag mirrorgooglecontainers/kube-apiserver-amd64:v1.13.4 k8s.gcr.io/kube-apiserver:v1.13.4
+docker tag mirrorgooglecontainers/kube-controller-manager-amd64:v1.13.4 k8s.gcr.io/kube-controller-manager:v1.13.4
+docker tag mirrorgooglecontainers/kube-scheduler-amd64:v1.13.4 k8s.gcr.io/kube-scheduler:v1.13.4
+docker tag mirrorgooglecontainers/kube-proxy-amd64:v1.13.4 k8s.gcr.io/kube-proxy:v1.13.4
+docker tag mirrorgooglecontainers/pause:3.1 k8s.gcr.io/pause:3.1
+docker tag mirrorgooglecontainers/etcd-amd64:3.2.24 k8s.gcr.io/etcd:3.2.24
+docker tag coredns/coredns:1.2.6 k8s.gcr.io/coredns:1.2.6
+
+kubeadm init --pod-network-cidr=10.244.0.0/16  //初始化
+
+查看组件 
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config //配置文件拷贝到家用户的环境变量中，原因是kubectl命令需要使用kubernetes-admin来运行
+chown $(id -u):$(id -g) $HOME/.kube/config
+kubeadm join 10.9.25.116:6443 --token ju7rwl.twkfl28cjo60ta1f --discovery-token-ca-cert-hash sha256:d3bc66016e9985f247fbd5aa802c716866c99fa8ba6bf82886a4b24dfb601d4b  // 备份好 kubeadm init 输出中的 kubeadm join 命令，因为您会需要这个命令来给集群添加节点
+kubectl get cs  //检查组建
+kubectl get nodes //查看节点
+
+网络插件安装flannel——网络插件如flannel、weave、calico
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml //基于角色访问控制
+curl -sSL "https://github.com/coreos/flannel/blob/master/Documentation/kube-flannel.yml?raw=true" | kubectl create -f -  //安装flannel
+docker pull quay-mirror.qiniu.com/coreos/flannel:v0.11.0-amd64 //7牛flannel镜像
+docker tag quay-mirror.qiniu.com/coreos/flannel:v0.11.0-amd64 quay.io/coreos/flannel:v0.11.0-amd64 //打tag
+
+Node配置:
+yum -y install docker-ce kubelet kubeadm //安装docker和kub
+systemctl start docker  
+systemctl enable docker kubelet //启动docker和kubernetes
+
