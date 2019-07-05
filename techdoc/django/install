@@ -1,0 +1,14 @@
+一. 版本选择
+Django 1.5.x 支持 Python 2.6.5 Python 2.7, Python 3.2 和 3.3.
+Django 1.6.x 支持 Python 2.6.X, 2.7.X, 3.2.X 和 3.3.X
+Django 1.7.x 支持 Python 2.7, 3.2, 3.3, 和 3.4 （注意：Python 2.6 不支持了）
+Django 1.8.x 支持 Python 2.7, 3.2, 3.3, 3.4 和 3.5.  （长期支持版本 LTS)
+Django 1.9.x 支持 Python 2.7, 3.4 和 3.5. 不支持 3.3 了
+Django 1.10.x 支持 Python 2.7, 3.4 和 3.5. 
+Django 1.11.x 支持 Python 2.7, 3.4, 3.5 和 3.6（长期支持版本 LTS) 最后一个支持 Python 2.7 的版本
+Django 2.0.x 支持 Python 3.4, 3.5 和 3.6 （注意，不再支持 Python 2）
+
+二、版本安装
+pip install Django==1.8.16 (选择对应版本)
+
+三、

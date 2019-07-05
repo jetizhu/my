@@ -1,0 +1,13 @@
+kubectl get node	//查看机器节点
+kubectl get pod		//查看pod 
+kubectl get service	//查看服务
+kubectl delete pod nginx-deploy-5b595999-44zwq	//删除pod
+kubectl get pods -o wide	//查看pod在哪个node节点
+kubectl expose deployment nginx-test --name=nginx --port=80 --target-port=8099 --protocol=TCP	//创建一个名称为nginx service
+kubectl delete service nginx			//删除nginx service
+kubectl get pods -n kube-system -o wide		//查看system service node分配情况
+kubectl get svc -n kube-system			//查看system service 
+kubectl run client --image=busybox --replicas=1 -it --restart=Never　　#创建pod
+kubectl exec -it client /bin/sh    #首次创建如果没进入到容器，可以使用这命令进入
+
+
