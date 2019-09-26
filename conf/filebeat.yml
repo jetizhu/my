@@ -1,0 +1,28 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /data/log/nginx/*.log
+  tags: ["nginx-log"]
+  fields:
+    type: "nginx-log"
+    log_topic: "nginx_log_topic"
+  fields_under_root: true
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+setup.template.settings:
+  index.number_of_shards: 3
+output.kafka:
+  enabled: true
+  hosts: ["192.168.2.229:9092","192.168.2.230:9092","192.168.2.231:9092","192.168.3.33:9092","192.168.3.34:9092","192.168.3.35:9092"]
+  topic: "%{[log_topic]}"
+  partition.round_robin:
+    reachable_only: true
+  worker: 2
+  required_acks: 1
+  compression: gzip
+  max_message_bytes: 10000000
+processors:
+  - drop_fields:
+     fields: ["beat","input","source","offset"]

@@ -1,0 +1,22 @@
+{
+    "backend": [
+      {
+        "backend_ip": "192.168.6.88:80 192.168.6.89:80",
+        "backend_path": "/"
+      },
+      {
+        "backend_ip": "192.168.38.109:8080 192.168.38.110:8080",
+        "backend_path": "/api"
+      }
+    ],
+    "include": "",
+    "port": "443",
+    "server_name": "report.ztbest.com"
+  }
+
+
+
+python check.py  |jq '.[] | {server_name:.server_name,server_port:.port,backend:.backend[]}' |jq '. | {server_name:.server_name,server_port:.server_port,backend_ip:.backend.backend_ip,backend_path:.backend.backend_path}'
+cat test.json |tr -d '\n' |tr '}' '\n' |sed 's/$/}/g' >2.json
+
+
