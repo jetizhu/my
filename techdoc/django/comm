@@ -1,3 +1,4 @@
 python  manage.py  makemigrations appname //创建APP表
 python   manage.py  migrate  //创建数据库
-
+python manage.py migrate --fake main zero
+python manage.py migrate --fake-initia
