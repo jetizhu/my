@@ -1,0 +1,3 @@
+apt-get install npm	//安装NPM
+npm install vue		//安装vue
+npm install -g vue-cli	//cli install 
