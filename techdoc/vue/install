@@ -3,3 +3,4 @@ npm install vue		//安装vue
 npm install -g vue-cli	//cli install 
 vue init webpack <appname>	//create appname
 npm i element-ui -S		//安装Element UI
+npm install axios --save	//install axios
