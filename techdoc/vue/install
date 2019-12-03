@@ -1,10 +1,11 @@
 apt-get install npm	//安装NPM
-npm install vue		//安装vue
-npm install -g vue-cli	//cli install 
-vue init webpack <appname>	//create appname
-npm i element-ui -S		//安装Element UI
-npm install axios --save	//install axios
 
 #npm update
 npm install -g npm 
 /usr/local/bin/npm -v &&npm -v &&command -v npm &&type npm &&hash -d npm &&npm -v &&command -v npm
+
+npm install vue         //安装vue
+npm install -g vue-cli  //cli install
+vue init webpack <appname>      //create appname
+npm i element-ui -S             //安装Element UI
+npm install axios --save        //install axios
