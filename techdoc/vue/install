@@ -4,7 +4,11 @@ apt-get install npm	//安装NPM
 npm install -g npm 
 /usr/local/bin/npm -v &&npm -v &&command -v npm &&type npm &&hash -d npm &&npm -v &&command -v npm
 
-npm install vue         //安装vue
+npm 
+    -S   测试环境打包发布生产
+    -g   全局环境
+    -D   测试环境，不发布到生产
+npm install vue -S        //安装vue
 npm install -g vue-cli  //cli install
 vue init webpack <appname>      //create appname
 npm i element-ui -S             //安装Element UI
