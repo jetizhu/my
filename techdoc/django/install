@@ -19,4 +19,4 @@ pip install djangorestframework  //restapi 安装
 pip install MySQL-python //mysql支持
 pip install djangorestframework-filters	 //filters过滤
 apt-get install libldap2-dev libsasl2-dev && python -m pip install python-ldap  //ldap 认证模块 
-pip install djangorestframework-jwt //json web token 认证登陆插件 
+pip install djangorestframework-jwt //json web token 认证登陆插件  import datetime  //setting 导入模块
